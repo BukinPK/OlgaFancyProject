@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Это так вкладка называется</title>
+</head>
+<body>
+<p> {{ data["Ну, что такое ассоциативные массивы ты, надеюсь, знаешь"] }} </p>
+<p> {{ data["kek"] }} </p>
+
+<p><a href="{{ data['jinja_doc'] }}">Линк на статейку по Jinja</a></p>
+
+<form action="video">
+    <label id="url">Сюда вводи видео</label>
+    <input type="text" name="url" value="" required>
+    <input type="submit" value="Поньк">
+</form>
+
+{% if data.get("comments") %}
+    <ul id="navigation">
+    {% for comment in data["comments"] %}
+        <li>{{ comment }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+</body>
+</html>
