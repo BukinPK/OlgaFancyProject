@@ -24,5 +24,14 @@
     </ul>
 {% endif %}
 
+{% if data.get("word_count") %}
+    <ul>
+    {% for word, count in data["word_count"].items() %}
+        <li>{{ count }}: {{ word }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+
 </body>
 </html>
