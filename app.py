@@ -32,9 +32,11 @@ def video():
     try:
         comments = core.video_comments(video_id)
         word_count = core.word_count(comments)
+        wc = core.wordcloud_from_dict(word_count)
 
         data["comments"] = comments
         data["word_count"] = word_count
+        data['wc_svg'] = wc.to_svg()
 
         return render_template("index.html", data=data)
     except Exception as e:

@@ -3,6 +3,7 @@ import re
 import time
 
 from googleapiclient.discovery import build
+from wordcloud import WordCloud
 
 API_KEY = "AIzaSyDuV1ssRswKsW2uUjOWIyXWVh3sDDovBAw"
 VIDEO_ID = "uaX3X3AF6Gw"
@@ -47,6 +48,19 @@ def word_count(comments: list[str]):
 
     # Это тупо сортировка, не пугайся
     return {k: v for k, v in sorted(word_count_dict.items(), key=lambda x: x[1], reverse=True)}
+
+
+def wordcloud_from_dict(d: dict):
+    wc = WordCloud(
+        background_color="black",
+        colormap='Blues',
+        max_words=200,
+        mask=None,
+        width=1600,
+        height=1600
+    ).generate_from_frequencies(d)
+
+    return wc
 
 
 if __name__ == "__main__":

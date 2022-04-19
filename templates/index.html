@@ -32,6 +32,11 @@
     </ul>
 {% endif %}
 
+{% if data.get("wc_svg") %}
+
+    {{ data["wc_svg"] | safe }}
+
+{% endif %}
 
 </body>
 </html>
