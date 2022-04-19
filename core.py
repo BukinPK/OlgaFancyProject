@@ -4,6 +4,7 @@ import time
 
 from googleapiclient.discovery import build
 from wordcloud import WordCloud
+from pymystem3 import Mystem
 
 API_KEY = "AIzaSyDuV1ssRswKsW2uUjOWIyXWVh3sDDovBAw"
 VIDEO_ID = "uaX3X3AF6Gw"
@@ -33,20 +34,16 @@ def video_comments(video_id):
     return comments
 
 
+def clean_comments(comments: list[str]) -> list[str]:
+    return [re.sub(r"\W", " ", comment) for comment in comments]
+
+
 def word_count(comments: list[str]):
-    # defaultdict -- это такой же словарь как и обычный, только ты можешь задавать ему дефолтное значение типо если
-    # такого ключа нет -- то он выставляется нулём. Это чтобы можно было сразу инкрементить значение, а не делать
-    # проверку на то есть оно или нет и в случае если нет то присваисать, а в случае если есть -- инкрементить.
-    # Не забудь удалить комменты перед сдачей)))
     word_count_dict = collections.defaultdict(lambda: 0)
     for comment in comments:
-        clean_comment = re.sub(r"\W", " ", comment)
-
-        # Тут можешь точку ставить и чекать правильно ли отрабатывает твоя регулярка
-        for r in clean_comment.split():
+        for r in comment.split():
             word_count_dict[r] += 1
 
-    # Это тупо сортировка, не пугайся
     return {k: v for k, v in sorted(word_count_dict.items(), key=lambda x: x[1], reverse=True)}
 
 
@@ -61,6 +58,18 @@ def wordcloud_from_dict(d: dict):
     ).generate_from_frequencies(d)
 
     return wc
+
+
+def lemmatize(comments: list[str]) -> list[str]:
+    lem_blacklist = ["", " ", "\n"]
+
+    result = []
+    m = Mystem()
+    for comment in comments:
+        lemmas = m.lemmatize(comment)
+        result.append(' '.join([lem for lem in lemmas if lem.strip() not in lem_blacklist]))
+
+    return result
 
 
 if __name__ == "__main__":

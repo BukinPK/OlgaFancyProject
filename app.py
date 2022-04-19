@@ -31,7 +31,9 @@ def video():
 
     try:
         comments = core.video_comments(video_id)
-        word_count = core.word_count(comments)
+        clean_comments = core.clean_comments(comments)
+        lem_comments = core.lemmatize(clean_comments)
+        word_count = core.word_count(lem_comments)
         wc = core.wordcloud_from_dict(word_count)
 
         data["comments"] = comments
@@ -40,7 +42,7 @@ def video():
 
         return render_template("index.html", data=data)
     except Exception as e:
-        return render_template("error.html", error=e, str=str)  # Если хочешь использовать функции, их тоже нужно передать
+        return render_template("error.html", error=e, str=str)
 
 
 if __name__ == "__main__":

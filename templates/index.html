@@ -16,26 +16,26 @@
     <input type="submit" value="Поньк">
 </form>
 
+{% if data.get("wc_svg") %}
+
+    {{ data["wc_svg"] | safe }}
+
+{% endif %}
+
+{% if data.get("word_count") %}
+<ul>
+    {% for word, count in data["word_count"].items() %}
+    <li>{{ count }}: {{ word }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% if data.get("comments") %}
     <ul id="navigation">
     {% for comment in data["comments"] %}
         <li>{{ comment }}</li>
     {% endfor %}
     </ul>
-{% endif %}
-
-{% if data.get("word_count") %}
-    <ul>
-    {% for word, count in data["word_count"].items() %}
-        <li>{{ count }}: {{ word }}</li>
-    {% endfor %}
-    </ul>
-{% endif %}
-
-{% if data.get("wc_svg") %}
-
-    {{ data["wc_svg"] | safe }}
-
 {% endif %}
 
 </body>
