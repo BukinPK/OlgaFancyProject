@@ -15,30 +15,26 @@ def main():
 @app.route('/video')
 def video():
     video_id = request.args.get("url")
-    data = { }
+    data = {}
 
     try:
         comments = core.video_comments(video_id)
         clean_comments = core.clean_comments(comments)
         lem_comments = core.lemmatize(clean_comments)
-        word_count = core.word_count(lem_comments)
-        clean_stop_words = core.clean_stop_words(word_count.keys())
-        word_count = {k: word_count[k] for k in clean_stop_words}
+        clean_comments = core.clean_stop_words(lem_comments)
+        word_count = core.word_count(clean_comments)
         wc = core.wordcloud_from_dict(word_count)
 
-        get_polarity = core.get_polarity(lem_comments)
-        get_analysis = core.get_analysis(get_polarity)
+        polarity_data = core.get_polarity(clean_comments)
+        core.get_graph(polarity_data)
 
 
         #data["comments"] = comments
         #data["word_count"] = word_count
-        #data['get_subjectivity'] = get_subjectivity
-        #data['subjectivity'] = data['comments'].apply(get_subjectivity)
 
         data['wc_svg'] = wc.to_svg()
 
-        data['polarity'] = data['comments'].apply(get_polarity)
-        data['analysis'] = data['polarity'].apply(get_analysis)
+        data["graph"] = "images/img.png"
 
         return render_template("index.html", data=data)
     except Exception as e:

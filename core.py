@@ -1,24 +1,24 @@
 import collections
 import re
 import time
-from typing import Any
 
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use('fivethirtyeight')
+plt.style.use('Solarize_Light2')
 
 from googleapiclient.discovery import build
 from textblob import TextBlob
-from nltk.corpus import stopwords
+import nltk
 from wordcloud import WordCloud
 from pymystem3 import Mystem
+from googletrans import Translator
 
 API_KEY = "AIzaSyDuV1ssRswKsW2uUjOWIyXWVh3sDDovBAw"
-VIDEO_ID = "uaX3X3AF6Gw"
 
 youtube = build("youtube", "v3", developerKey=API_KEY)
 sw = ["br", "https", "это", "href", "youtu", "www", "com", "quot"]
+nltk.download('stopwords')
+translator = Translator()
 
 
 def video_comments(video_id):
@@ -48,12 +48,13 @@ def clean_comments(comments: list[str]) -> list[str]:
 
 
 def clean_stop_words(comments: list[str]) -> list[str]:
-    text_tokens = clean_comments(comments)
-    return [word for word in text_tokens
-            if word not in stopwords.words('russian')
-            and word not in stopwords.words('english')
-            and word not in sw
-            and len(word) > 1]
+    comments = clean_comments(comments)
+    return [' '.join([word for word in comment.split()
+                      if word not in nltk.corpus.stopwords.words('russian')
+                      and word not in nltk.corpus.stopwords.words('english')
+                      and word not in sw
+                      and len(word) > 1])
+            for comment in comments]
 
 
 def word_count(comments: list[str]):
@@ -90,23 +91,30 @@ def lemmatize(comments: list[str]) -> list[str]:
     return result
 
 
-
-
 def get_polarity(comments: list[str]):
     respol = []
-    for comment in comments:
+    translated_comments = translator.translate('\n'.join(comments), dest="en")
+    translated_comments = translated_comments.text.lower().split('\n')
+    for comment in translated_comments:
         respol.append(TextBlob(comment).sentiment.polarity)
     return respol
 
 
-def get_analysis(score):
+def get_analysis(score: int) -> str:
     if score < 0:
-        return 'Negative'
+        return 'Ng'
     elif score == 0:
-        return 'Neutral'
+        return 'Neut'
     else:
-        return 'Positive'
+        return 'Pos'
 
 
-if __name__ == "__main__":
-    comments_list = video_comments(VIDEO_ID)
+def get_graph(polarity_data):
+    data = pd.Series(polarity_data)
+    data = data.apply(get_analysis)
+    # plt.tick_params(axis='both', which='major', labelsize=10, direction='in')
+    plt.title('Sentiment Analysis')
+    # plt.xlabel('Sentiment')
+    plt.ylabel('Counts')
+    data.value_counts().plot(kind='bar')
+    plt.savefig("static/images/img.png")
