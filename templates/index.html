@@ -174,36 +174,36 @@
 </div>
 
 {% if data.get("graph") %}
-    <div class="col-lg-5 ml-auto p-lg-5 mt-4 mt-lg-0" data-aos="fade-left" data-aos-delay="" style="float: left">
-        <img src="{{ url_for('static', filename=data['graph']) }}">
-    </div>
+<div class="col-lg-5 ml-auto p-lg-5 mt-4 mt-lg-0" data-aos="fade-left" data-aos-delay="" style="float: left">
+    <img src="{{ url_for('static', filename=data['graph']) }}">
+</div>
 {% endif %}
 
 {% if data.get("wc_svg") %}
-    <div class="col-lg-5 ml-auto p-lg-5 mt-4 mt-lg-0" data-aos="fade-left" data-aos-delay="">
-        <h2 class="mb-3 text-black">Самые популярные слова</h2>
-        {% if data.get("wc_svg") %}
+<div class="col-lg-5 ml-auto p-lg-5 mt-4 mt-lg-0" data-aos="fade-left" data-aos-delay="">
+    <h2 class="mb-3 text-black">Самые популярные слова</h2>
+    {% if data.get("wc_svg") %}
 
-        {{ data["wc_svg"] | safe }}
+    {{ data["wc_svg"] | safe }}
 
-        {% endif %}
+    {% endif %}
 
-        {% if data.get("word_count") %}
-        <ul>
-            {% for word, count in data["word_count"].items() %}
-            <li>{{ count }}: {{ word }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+    {% if data.get("word_count") %}
+    <ul>
+        {% for word, count in data["word_count"].items() %}
+        <li>{{ count }}: {{ word }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
-        {% if data.get("comments") %}
-        <ul id="navigation">
-            {% for comment in data["comments"] %}
-            <li>{{ comment }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div>
+    {% if data.get("comments") %}
+    <ul id="navigation">
+        {% for comment in data["comments"] %}
+        <li>{{ comment }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
 {% endif %}
 
 <div class="row pt-5 mt-5 text-center">
